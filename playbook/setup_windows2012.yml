@@ -12,5 +12,10 @@
 
     - name: 'Create directory structure'
       win_file:
-        path: 'C:\CMT\log'
+        path: 'C:\CMT\log\server'
+        state: 'directory'
+
+    - name: 'Create directory structure'
+      win_file:
+        path: 'C:\CMT\log\storage'
         state: 'directory'
