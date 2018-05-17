@@ -1,0 +1,88 @@
+- name: 'OS Set up'
+  hosts: [ lab ]
+  gather_facts: no
+  tags: OS
+
+  tasks:
+    - name: 'Create Dir'
+      file:
+        path: '/tmp/hp/storage/tools'
+        state: 'directory'
+      tags: Files
+
+    - name: 'USER Add'
+      user:
+        name: 'testuser'
+        groups: 'wheel'
+      tags: User
+
+
+- name: 'Disable SElinux'
+  hosts: [ lab ]
+  gather_facts: no
+  tags: OS
+  vars:
+    selinux_list:
+      - path : 'SELINUX=enforcing'
+
+  tasks:
+    - name: 'SElinux Line Add'
+      lineinfile:
+        dest: '/etc/selinux/config'
+        insertafter: '{{ item.path }}'
+        line: 'SELINUX=disabled'
+        state: 'present'
+      with_items: '{{ selinux_list }}'
+      tags: SElinux
+
+    - name: 'SElinux Line Coment'
+      lineinfile:
+        dest: '/etc/selinux/config'
+        regexp: '{{ item.path }}'
+        insertafter: '{{ item.path }}'
+        line: '#{{ item.path }}'
+        state: 'present'
+      with_items: '{{ selinux_list }}'
+      tags: SElinux
+
+
+- name: 'systemd Set up'
+  hosts: [ lab ]
+  gather_facts: no
+  tags: systemd
+
+  tasks:
+    - name: 'mask to ctrl-alt-del.target '
+      systemd:
+        name: 'ctrl-alt-del.target'
+        masked: 'yes'
+      tags: systemd
+
+
+- name: 'Packages'
+  hosts: [ lab ]
+  gather_facts: no
+  tags: systemd
+
+  tasks:
+    - name: 'install packages'
+      yum: name={{ item }} state=absent
+      with_items:
+      - wget-1.14-13.el7.x86_64
+      - httpd-2.4.6-45.el7.x86_64
+      - httpd-tools-2.4.6-45.el7.x86_64
+      - ntpdate-4.2.6p5-25.el7
+      - epel-release-7-10
+      tags: packages
+
+- name: 'Create rpm tmp directory'
+  hosts: [ lab ]
+  gather_facts: no
+  tags: OS
+
+  tasks:
+    - name: 'Create rpm tmp directory'
+      file:
+        state: directory
+        dest:  '{{ yuminstall_remote_dir }}/'
+      tags: RPM

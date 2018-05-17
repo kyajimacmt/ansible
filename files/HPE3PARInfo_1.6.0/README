@@ -1,0 +1,134 @@
+******************************************************************
+For a Unix platform
+******************************************************************
+
+-----------------------------------------------------------------------------------------
+Pre requites:
+-----------------------------------------------------------------------------------------
+* Ensure that root user access to the system is available.
+
+* The unix_local_install.sh script must have executable permissions. If it does not have the same, run the following command:
+
+    #chmod +x ./unix_local_install.sh 
+
+* If using Linux, ensure that you have libstdc++.so.6 or later version installed on the system.
+
+* For Solaris, libstdc++.so.6 and libgcc_s.so.1 or later version must be installed on the system.
+
+* If using HP-UX 11.23, the Portability Package must be installed on the system. This package provides new HP-UX APIs and adds enhancements to the existing HP-UX APIs for the HP-UX 11i v2 release.
+
+   https://h20392.www2.hp.com/portal/swdepot/displayInstallInfo.do?productNumber=PortPkg
+
+-----------------------------------------------------------------------------------------
+To install, uninstall, or upgrade HP 3PARInfo on a Unix platform
+-----------------------------------------------------------------------------------------
+Run the following install script:
+
+./unix_local_install.sh
+
+Install, uninstall, or upgrade is performed based on the following scenarios:-
+
+* If HP 3PARInfo is not installed on the system, then the installer installs a fresh copy of HP 3PARInfo. 
+
+* If the same version of HP 3PARInfo is available, then the installer will prompt for an uninstallation.
+
+* If an older version of HP 3PARInfo is available, then the installer identifies the same and prompts for an upgrade.
+
+
+********************************************************************
+For a Windows platform
+********************************************************************
+
+-----------------------------------------------------------------------------------------
+Pre requites:
+-----------------------------------------------------------------------------------------
+You must have Administrator privileges to install and execute HP 3PARInfo.
+
+-----------------------------------------------------------------------------------------
+To install, uninstall, or upgrade HP 3PARInfo on a Windows platform
+-----------------------------------------------------------------------------------------
+
+Run setup.exe from the HP3PARInfo-windows folder to install or upgrade.
+
+Install or upgrade is performed based on the following scenarios:-
+
+* If HP 3PARInfo is not installed on the system, then the installer installs a fresh copy of HP 3PARInfo. 
+
+* If an older version of HP 3PARInfo is available, the installer identifies the same and prompts for an upgrade.
+
+To uninstall, navigate to 'Add or Remove Programs' screen and uninstall HP 3PARInfo. 
+
+
+********************************************************************
+Enhancements
+********************************************************************
+
+HP3PARInfo 1.4.2 version supports a new option -m to suppress creation of log files.
+
+-----------------------------------------------------------------------------------------
+Working with HP 3PARInfo 1.4.2
+-----------------------------------------------------------------------------------------
+
+Table 1 Command options
+Command option Information you get
+-v  Version information of HP 3PARInfo.
+-h  Help for HP 3PARInfo.
+-i  The list of LUNs that are exposed to hosts.
+-f  More information about the specified LUN.
+-d  Detailed information about all the 3PAR LUNs delimited by the specified character
+-ea The list of LUNs that are exposed to hosts with their VV ID and Domain ID.
+-m  To disable the logs, This option should not be used in isolation, It has to be used along with other options.
+
+Eample:
+
+Get version information without logs
+-----------------------------------------------------------------------------------------
+Use the -v option along with -m to view HP 3PARInfo version information. 
+The syntax is:
+# HP3PARInfo -v -m
+
+Get help without logs
+-----------------------------------------------------------------------------------------
+Use the -h option along with -m to view help about HP 3PARInfo. 
+All the command options are displayed. The
+syntax is:
+# HP3PARInfo -h -m
+
+Get LUNs without logs
+-----------------------------------------------------------------------------------------
+Use the -i option along with -m  to view the list of LUNs that are exposed to hosts. 
+The syntax is:
+# HP3PARInfo -i -m
+
+Get list of LUNs separated by specified delimiter without logs
+-----------------------------------------------------------------------------------------
+Use the -d option along with -m to view detailed information about all the 3PAR LUNs separated 
+by the user specified delimiter. Output will display one LUN per line. 
+The syntax is:
+#HP3PARInfo -d{char} -m
+
+Get LUN information without logs
+-----------------------------------------------------------------------------------------
+Use the -f option along with -m  to view more information about a LUN. 
+The syntax is:
+# HP3PARInfo -f [devicefile] -m
+
+Get LUNs with VV ID and Domain ID
+-----------------------------------------------------------------------------------------
+Use the -ea option to view the list of LUNs that are exposed to hosts. 
+This option is similar to -i option with the exception that there are 
+two additional columns, VV ID and Domain ID in the end.
+The syntax is:
+# HP3PARInfo -ea -m
+
+
+********************************************************************
+Log files
+********************************************************************
+
+Logs are generated whenever you run the HP3PARInfo command without -m option. You can find the
+log files at the following location:
+• On Linux, AIX, Solaris, ESX and ESXi — /var/log/HP3PARInfo/
+• On HP-UX — /var/adm/HP3PARInfo/
+• On Windows — Folder in which HP 3PARInfo is installed.
+

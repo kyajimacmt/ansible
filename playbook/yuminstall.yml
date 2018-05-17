@@ -1,0 +1,60 @@
+---
+- name: 'Create rpm tmp directory         '
+  file:
+    state: directory
+    dest:  '{{ yuminstall_remote_dir }}/'
+  changed_when: no
+  always_run:   yes
+
+- name: 'List packages in local directory '
+  command: find '{{ yuminstall_local_dir }}/' -type f -printf "%f\n"
+  register: register_local_rpm_list
+  changed_when: no
+  always_run:   yes
+  delegate_to:  localhost
+  when:
+    - yuminstall_rpm_list | d([]) != []
+    - yuminstall_rpm_list is iterable
+
+- name: 'Put rpm packages                 '
+  copy:
+    src:  '{{ yuminstall_local_dir  }}/{{ item.name }}'
+    dest: '{{ yuminstall_remote_dir }}/'
+  ignore_errors: yes
+  changed_when:  no
+  always_run:    yes
+  with_items:    yuminstall_rpm_list
+  when:
+    - yuminstall_rpm_list     | d([]) != []
+    - register_local_rpm_list | d()
+    - register_local_rpm_list.stdout_lines | d([]) != []
+    - item.name in register_local_rpm_list.stdout_lines
+
+- name: 'Create repo in remote directory   '
+  shell:        createrepo {{ yuminstall_remote_dir }}
+  always_run:   yes
+  changed_when: no
+
+- name:  'Configure ansible repo           '
+  yumrepo:
+    name:        'Ansible'
+    description: 'Ansible Managed Packages' 
+    baseurl:     'file://{{ yuminstall_remote_dir }}'
+    state:       'present'
+    enabled:     '1'
+    gpgcheck:    '0'
+  always_run:    yes
+  when:
+    - yuminstall_rpm_list | d([]) != []
+
+- name: 'Install packages from yum-repo   '
+  yum: 
+    state:        '{{ item.state | d("present") }}'
+    name:         '{{ item.name  | regex_replace(".rpm","") }}'
+    update_cache: yes
+  with_items: yuminstall_rpm_list
+  when:
+    - yuminstall_rpm_list | d([]) != []
+    - item.name | d()
+
+

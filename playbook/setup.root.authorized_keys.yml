@@ -1,0 +1,9 @@
+- name: '公開鍵作成'
+  hosts: all
+  gather_facts: no
+  tags: OS
+
+  tasks:
+    - name: setup authorized_keys
+      authorized_key: user=root
+                      key="{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"

@@ -1,0 +1,13 @@
+[lab]
+node2
+node3
+
+[windows]
+192.168.35.60
+
+[windows:vars]
+ansible_user=administrator
+ansible_password=p@ssw0rd
+ansible_port=5986
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore

@@ -1,0 +1,16 @@
+- name: 'OS Set up'
+  hosts: [ windows ]
+  gather_facts: no
+  tags: OS
+
+  tasks:
+    - name: Add a user
+      win_user:
+        name: 'ansible'
+        password: 'p@ssw0rd'
+        groups: 'Users'
+
+    - name: 'Create directory structure'
+      win_file:
+        path: 'C:\CMT\log'
+        state: 'directory'

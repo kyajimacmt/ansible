@@ -1,0 +1,100 @@
+- name: 'Start Advance preparation'
+  hosts: [ lab ]
+  gather_facts: no
+  tags: Advance preparation
+
+  tasks:
+    - name: 'Create Hostname Directory'
+      file:
+        path: '/tmp/hp/storage/`uname -n`_`date`/'
+        state: 'directory'
+      tags: Dir
+
+    - name: 'Create tools Directory'
+      file:
+        path: '/tmp/hp/storage/tools/'
+        state: 'directory'
+      tags: Dir
+
+    - name: 'Files Copy ---> storageinfo_after'
+      copy:
+        src: '/home/ansible/files/storageinfo_after.sh'
+        dest: '/tmp/hp/storage/tools/'
+      tags: Files
+
+    - name: 'Files Copy ---> storageinfo_before'
+      copy:
+        src: '/home/ansible/files/storageinfo_before.sh'
+        dest: '/tmp/hp/storage/tools/'
+      tags: Files
+
+    - name: 'Files Copy ---> modprobe.conf'
+      copy:
+        src: '/home/ansible/files/modprobe.conf_after'
+        dest: '/tmp/hp/storage/tools/'
+      tags: Files
+
+    - name: 'Files Copy ---> multipath.conf'
+      copy:
+        src: '/home/ansible/files/multipath-3PAR_RHEL7.x-64bit-2015_08_08_v2_fix.conf'
+        dest: '/tmp/hp/storage/tools/'
+      tags: Files
+
+    - name: 'Files Copy ---> HPE3PARInfo'
+      copy:
+        src: '/home/ansible/files/HPE3PARInfo_1.6.0/'
+        dest: '/tmp/hp/storage/tools/'
+      tags: Files
+
+
+- name: 'Start Advance preparation -2-'
+  hosts: [ lab ]
+  gather_facts: no
+  tags: Advance preparation2
+
+  tasks:
+  - block:
+    - name: '3PARInfo install'
+      command: 'rpm -q hpe3parinfo-1.6.0-0.x86_64'
+      changed_when: no
+    rescue:
+    - command: 'rpm -ivh /tmp/hp/storage/tools/HPE3PARINFO_Linux_x64.rpm'
+      tags: 3PARInfo
+
+    - name: 'Get storageinfo_before'
+      shell: 'sh /tmp/hp/storage/tools/storageinfo_before.sh'
+      tags: storageinfo
+
+
+- name: 'Start Change work'
+  hosts: [ lab ]
+  gather_facts: no
+  tags: Change work
+
+  tasks:
+    - name: 'Files Copy ---> multipath.conf --> /etc/multipath.con'
+      copy:
+        src: '/home/ansible/files/multipath-3PAR_RHEL7.x-64bit-2015_08_08_v2_fix.conf'
+        dest: '/etc/multipath.conf'
+      tags: Files
+
+    - name: 'Start multipathd.service'
+      systemd:
+        name: 'multipathd.service'
+        state: 'started'
+        enabled: 'yes'
+      tags: systemd
+
+#    - name: 'Make modprobe.conf'
+#      file:
+#        path: '/etc/modprobe.d/modprobe.conf'
+#        state: 'file'
+#      tags: File
+
+    - name: 'Make modprobe.conf'
+      lineinfile:
+        dest: '/etc/modprobe.d/modprobe.conf'
+        line: 'options qla2xxx qlport_down_retry=14 ql2xmaxqdepth=16'
+        state: 'present'
+        create: 'yes'
+      tags: File

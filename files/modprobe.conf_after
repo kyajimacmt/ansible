@@ -1,0 +1,1 @@
+options qla2xxx ql2xmaxqdepth=16 qlport_down_retry=14
