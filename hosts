@@ -6,8 +6,8 @@ node3
 192.168.33.81
 
 [windows:vars]
-ansible_user=administrator
-ansible_password=p@ssw0rd
+ansible_user=vagrant
+ansible_password=vagrant
 ansible_port=5986
 ansible_connection=winrm
 ansible_winrm_server_cert_validation=ignore
