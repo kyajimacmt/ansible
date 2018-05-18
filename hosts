@@ -3,7 +3,7 @@ node2
 node3
 
 [windows]
-192.168.35.60
+192.168.33.81
 
 [windows:vars]
 ansible_user=administrator
