@@ -8,7 +8,8 @@
       win_user:
         name: 'ansible'
         password: 'p@ssw0rd'
-        groups: 'Users'
+        groups: 'Users,Remote Desktop Users'
+        groups_action: 'add'
 
     - name: 'Create directory structure'
       win_file:
